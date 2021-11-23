@@ -1,0 +1,7 @@
+# TODO: Define your analyzers here.
+
+module zeek_spicy_ipsec;
+
+public type IPSEC = unit {
+    payload: bytes &eod;
+};
