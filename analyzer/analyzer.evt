@@ -10,12 +10,22 @@ protocol analyzer spicy::ipsec_tcp over TCP:
 	parse with zeek_spicy_ipsec::IPSecPacketsTCP,
 	ports {4500/tcp};
 
+packet analyzer spicy::ipsec_esp:
+    parse with zeek_spicy_ipsec::IPSecESP_IP;
+
+packet analyzer spicy::ipsec_ah:
+    parse with zeek_spicy_ipsec::IPSecAH;
+
 import zeek_spicy_ipsec;
 import Zeek_zeek_spicy_ipsec;
 
 on zeek_spicy_ipsec::IPSecIKE -> event IPSEC::ike_message($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_ike_msg(self));
 
 on zeek_spicy_ipsec::IPSecESP -> event IPSEC::esp_message($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_esp_msg(self));
+
+on zeek_spicy_ipsec::IPSecESP_IP -> event IPSEC::esp_message_over_ip($packet, self.spi, self.seq, |self.payload|);
+
+on zeek_spicy_ipsec::IPSecAH -> event IPSEC::ah_message_over_ip($packet, self.spi, self.seq, self.next_len);
 
 on zeek_spicy_ipsec::IPSecIKEv2_SA_Proposal -> event IPSEC::ikev2_sa_proposal($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_proposal_msg(self));
 

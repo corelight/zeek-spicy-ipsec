@@ -634,3 +634,22 @@ type IPSecESP = unit(spi_val: uint32) {
 	seq: uint32;
 	payload: bytes &eod;
 };
+
+public type IPSecESP_IP = unit {
+	spi: uint32;
+	seq: uint32;
+	payload: bytes &eod;
+};
+
+public type IPSecAH = unit {
+    next_header: uint8;
+    payload_len: uint8 { self.next_len = 4*( $$ - 1 ); }
+    var next_len: uint8;
+    : uint16;
+	spi: uint32;
+	seq: uint32;
+	switch ( self.next_header ) {
+        50 -> esp: IPSecESP_IP &size=self.next_len if (self.next_len > 0);
+        * -> payload: bytes &size=self.next_len if (self.next_len > 0);
+	};    
+};

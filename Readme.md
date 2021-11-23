@@ -8,6 +8,16 @@ A blog detailing the development of this analyzer:
 
 - <https://zeek.org/2021/04/20/zeeks-ipsec-protocol-analyzer/>
 
+RFCs:
+- <https://tools.ietf.org/html/rfc2406> (ESP)
+- <https://tools.ietf.org/html/rfc4302> (AH)
+- <https://tools.ietf.org/html/rfc2408> (IKE v1)
+- <https://tools.ietf.org/html/rfc2409> (IKE v1)
+- <https://tools.ietf.org/html/rfc3948> (ESP packets encapsulated in UDP)
+- <https://tools.ietf.org/html/rfc4306> (IKE v2)
+- <https://tools.ietf.org/html/rfc7296> (IKE v2)
+- <https://tools.ietf.org/html/rfc8229> (ESP packets encapsulated in TCP)
+
 ## Example Logs
 
 ```

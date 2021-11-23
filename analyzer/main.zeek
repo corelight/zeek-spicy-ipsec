@@ -367,7 +367,7 @@ export {
 	## msg: The parsed IPSec message.
 	global IPSEC::ike_message: event(c: connection, is_orig: bool, msg: IPSEC::IKEMsg);
 
-	## Fires on every ESP message.
+	## Fires on every ESP message over TCP or UDP.
 	##
 	## c: The connection record describing the corresponding UDP flow.
 	##
@@ -375,6 +375,28 @@ export {
 	##
 	## msg: The parsed IPSec message.
 	global IPSEC::esp_message: event(c: connection, is_orig: bool, msg: IPSEC::ESPMsg);
+
+	## Fires on every ESP message over IP
+	##
+	## p: The raw packet header.
+	##
+	## spi: The SPI field.
+	##
+	## seq: The sequence number.
+	##
+	## payload_len: The payload length.
+	global IPSEC::esp_message_over_ip: event(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count);
+
+	## Fires on every AH message over IP
+	##
+	## p: The raw packet header.
+	##
+	## spi: The SPI field.
+	##
+	## seq: The sequence number.
+	##
+	## payload_len: The payload length.
+	global IPSEC::ah_message_over_ip: event(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count);
 
 	## Fires on every IKE SA proposal.
 	##
@@ -657,6 +679,14 @@ event zeek_init() &priority=5
 	Log::create_stream(IPSEC::IPSEC_LOG, [$columns=Info, $ev=log_ipsec, $path="ipsec"]);
 	}
 
+event zeek_init()
+	{
+	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x32, "spicy::ipsec_esp") )
+		Reporter::error("cannot register IPSec Spicy analyzer");
+	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x33, "spicy::ipsec_ah") )
+		Reporter::error("cannot register IPSec Spicy analyzer");
+	}
+
 function set_session(c: connection)
 	{
 	if ( ! c?$ipsec )
@@ -855,10 +885,10 @@ event protocol_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &pr
 	}
 
 event IPSEC::esp_message(c: connection, is_orig: bool, msg: IPSEC::ESPMsg)
-    {
-    if (disable_analyzer_after_detection == T && c?$ipsec && c$ipsec?$analyzer_id)
+	{
+	if (disable_analyzer_after_detection == T && c?$ipsec && c$ipsec?$analyzer_id)
 		{
 		disable_analyzer(c$id, c$ipsec$analyzer_id);
 		delete c$ipsec$analyzer_id;
 		}
-    }
+	}
