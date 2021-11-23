@@ -40,3 +40,19 @@ A blog detailing the development of this analyzer:
 1421270044.910382	ClEkJM2Vm5giqnMf4h	192.168.0.10	4500	144.76.154.114	4500	T	238671c80375a0fb	73d16a42f60ef7f0	2	0	35	F	F	F	T	F	F	1	(empty)	(empty)	(empty)	(empty)	(empty)	(empty)	(empty)	3468	-
 #close	2021-11-23-13-52-52
 ```
+
+# Testing PCAPs:
+
+The test suite comes with a set of traces collected from a variety of
+places that we document below. While these traces are all coming from
+public sources, please note that they may carry their own licenses.
+We collect them here for convenience only.
+
+- [ipsec_client.pcap](https://www.cloudshark.org/captures/9e63e31f9f56)
+- [ikev1-certs.pcap](https://github.com/wireshark/wireshark/blob/master/test/captures/ikev1-certs.pcap)
+- [ipsec-ikev1-isakmp-main-mode.pcap](https://www.cloudshark.org/captures/ff740838f1c2)
+- [ipsec-ikev1-isakmp-aggressive-mode.pcap](https://www.cloudshark.org/captures/e51f5c8a6b24)
+- ipsec-ikev1-payload-bad-length.pcap (self-made)
+- ipsec-ikev1-zero-length.pcap (self-made)
+- [IPsec_ESP-AH_tunnel_mode.cap](https://www.cloudshark.org/captures/dcbaa6ab009b)
+- [ipsec.cap](https://www.cloudshark.org/captures/6ad6e687ed9d)

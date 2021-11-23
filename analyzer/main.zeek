@@ -3,6 +3,11 @@ module IPSEC;
 export {
 	redef enum Log::ID += { IPSEC_LOG };
 
+	## Set to true to disable the analyzer after the protocol is confirmed.
+	## This helps reduce processing if you will not look at all of the IPSec
+	## traffic.
+	option disable_analyzer_after_detection = F;
+
 	# This is the format of ipsec.log
 	type Info: record {
 		# Timestamp for when the event happened.
@@ -56,6 +61,10 @@ export {
 		## Cipher hash of this IPSec transaction info:
 		## vendor_ids, notify_messages, transforms, ke_dh_groups, and proposals
 		hash: string &log &optional;
+		## The analyzer ID used for the analyzer instance attached
+		## to each connection.  It is not used for logging since it's a
+		## meaningless arbitrary number.
+		analyzer_id: count &optional;
 	};
 
 	# Event that can be handled to access the IPSec record as it is sent on
@@ -833,3 +842,23 @@ event IPSEC::DataAttribute(c: connection, is_orig: bool, msg: IKE_SA_Transform_A
 											msg$attribute_val);
 		}
 	}
+
+event protocol_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
+	{
+	set_session(c);
+	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
+		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
+		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
+		{
+		c$ipsec$analyzer_id = aid;
+		}
+	}
+
+event IPSEC::esp_message(c: connection, is_orig: bool, msg: IPSEC::ESPMsg)
+    {
+    if (disable_analyzer_after_detection == T && c?$ipsec && c$ipsec?$analyzer_id)
+		{
+		disable_analyzer(c$id, c$ipsec$analyzer_id);
+		delete c$ipsec$analyzer_id;
+		}
+    }
