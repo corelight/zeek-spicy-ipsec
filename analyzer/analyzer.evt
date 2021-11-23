@@ -1,25 +1,78 @@
-# TODO: Adjust here whether this is a file, tcp or ucp analyzer,
-# and the ports the analyzers work on. See
-# https://docs.zeek.org/projects/spicy/en/latest/zeek.html#interface-definitions-evt-files
-# for the DSL used here. Below, the active analyzer declaration defines a protocol analyzer.
-#
-# A file analyzer would be define like this:
-#
-#     file analyzer spicy::ZIP:
-#         parse with ZIP::Archive,
-#         mime-type application/zip;
-#
-# A packet analyzer would look like this:
+protocol analyzer spicy::ipsec_udp over UDP:
+	parse with zeek_spicy_ipsec::IPSecPacketUDP,
+	ports {4500/udp, 4501/udp};
 
-#     packet analyzer spicy::RawLayer:
-#         parse with Raw Layer::Packet;
+protocol analyzer spicy::ipsec_ike_udp over UDP:
+	parse with zeek_spicy_ipsec::IPSecIKE,
+	ports {500/udp};
 
-protocol analyzer spicy::IPSEC over TCP:
-    parse with zeek_spicy_ipsec::IPSEC,
-    port 8080/tcp;
+protocol analyzer spicy::ipsec_tcp over TCP:
+	parse with zeek_spicy_ipsec::IPSecPacketsTCP,
+	ports {4500/tcp};
 
 import zeek_spicy_ipsec;
 import Zeek_zeek_spicy_ipsec;
 
-# TODO: Connect Spicy-side events with Zeek-side events.
-on zeek_spicy_ipsec::IPSEC -> event IPSEC::message($conn, $is_orig, self.payload);
+on zeek_spicy_ipsec::IPSecIKE -> event IPSEC::ike_message($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_ike_msg(self));
+
+on zeek_spicy_ipsec::IPSecESP -> event IPSEC::esp_message($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_esp_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_SA_Proposal -> event IPSEC::ikev2_sa_proposal($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_proposal_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_SA_Transform -> event IPSEC::ikev2_sa_transform($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_transform_msg(self));
+
+on zeek_spicy_ipsec::DataAttribute -> event IPSEC::ike_data_attribute($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_data_attribute_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_KE_Payload -> event IPSEC::ikev2_ke_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_ke_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_IDi_Payload -> event IPSEC::ikev2_idi_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_id_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_IDr_Payload -> event IPSEC::ikev2_idr_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_id_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_CERT_Payload -> event IPSEC::ikev2_cert_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_cert_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_CERTREQ_Payload -> event IPSEC::ikev2_certreq_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_certreq_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_AUTH_Payload -> event IPSEC::ikev2_auth_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_auth_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_Ni_Payload -> event IPSEC::ikev2_nonce_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_nonce_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_N_Payload -> event IPSEC::ikev2_notify_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_notify_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_D_Payload -> event IPSEC::ikev2_delete_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_delete_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_V_Payload -> event IPSEC::ikev2_vendorid_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_vendorid_msg(self));
+
+on zeek_spicy_ipsec::TrafficSelector -> event IPSEC::ikev2_ts_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_trafficselector_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_E_Payload -> event IPSEC::ikev2_encrypted_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_encrypted_msg(self));
+
+on zeek_spicy_ipsec::ConfigureAttribute -> event IPSEC::ikev2_configuration_attribute($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_configuration_attr_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv2_EAP_Payload -> event IPSEC::ikev2_eap_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_eap_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_SA_Payload -> event IPSEC::ikev1_sa_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_sa_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_P_Payload -> event IPSEC::ikev1_p_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_p_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_T_Payload -> event IPSEC::ikev1_t_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_t_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_KE_Payload -> event IPSEC::ikev1_ke_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_ke_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_ID_Payload -> event IPSEC::ikev1_id_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_id_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_CERT_Payload -> event IPSEC::ikev1_cert_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_cert_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_CR_Payload -> event IPSEC::ikev1_certreq_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_certreq_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_HASH_Payload -> event IPSEC::ikev1_hash_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_hash_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_SIG_Payload -> event IPSEC::ikev1_sig_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_sig_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_NONCE_Payload -> event IPSEC::ikev1_nonce_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_nonce_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_N_Payload -> event IPSEC::ikev1_notify_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_notify_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_D_Payload -> event IPSEC::ikev1_delete_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_delete_msg(self));
+
+on zeek_spicy_ipsec::IPSecIKEv1_VID_Payload -> event IPSEC::ikev1_vid_payload($conn, $is_orig, Zeek_zeek_spicy_ipsec::create_vendorid_msg(self));
