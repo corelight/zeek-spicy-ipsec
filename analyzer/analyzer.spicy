@@ -651,5 +651,5 @@ public type IPSecAH = unit {
 	switch ( self.next_header ) {
         50 -> esp: IPSecESP_IP &size=self.next_len if (self.next_len > 0);
         * -> payload: bytes &size=self.next_len if (self.next_len > 0);
-	};    
+	};
 };
