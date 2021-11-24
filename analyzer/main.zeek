@@ -369,6 +369,9 @@ export {
 
 	## Fires on every ESP message over TCP or UDP.
 	##
+	## WARNING!!! It could be computationally expensive handling this event where you are
+	## monitoring site to site IPSec.  Use sparingly!
+	##
 	## c: The connection record describing the corresponding UDP flow.
 	##
 	## is_orig: True if the message was sent by the originator.
@@ -881,14 +884,5 @@ event protocol_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &pr
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
 		{
 		c$ipsec$analyzer_id = aid;
-		}
-	}
-
-event IPSEC::esp_message(c: connection, is_orig: bool, msg: IPSEC::ESPMsg)
-	{
-	if (disable_analyzer_after_detection == T && c?$ipsec && c$ipsec?$analyzer_id)
-		{
-		disable_analyzer(c$id, c$ipsec$analyzer_id);
-		delete c$ipsec$analyzer_id;
 		}
 	}
