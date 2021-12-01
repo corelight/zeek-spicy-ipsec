@@ -381,6 +381,9 @@ export {
 
 	## Fires on every ESP message over IP
 	##
+	## WARNING!!! It could be computationally expensive handling this event where you are
+	## monitoring site to site IPSec.  Use sparingly!
+	##
 	## p: The raw packet header.
 	##
 	## spi: The SPI field.
