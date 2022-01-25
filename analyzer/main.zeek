@@ -881,11 +881,11 @@ event IPSEC::DataAttribute(c: connection, is_orig: bool, msg: IKE_SA_Transform_A
 
 event protocol_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
 	{
-	set_session(c);
 	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
 		{
+		set_session(c);
 		c$ipsec$analyzer_id = aid;
 		}
 	}
