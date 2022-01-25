@@ -3,11 +3,6 @@ module IPSEC;
 export {
 	redef enum Log::ID += { IPSEC_LOG };
 
-	## Set to true to disable the analyzer after the protocol is confirmed.
-	## This helps reduce processing if you will not look at all of the IPSec
-	## traffic.
-	option disable_analyzer_after_detection = F;
-
 	# This is the format of ipsec.log
 	type Info: record {
 		# Timestamp for when the event happened.
