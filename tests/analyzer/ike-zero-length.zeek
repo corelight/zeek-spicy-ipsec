@@ -1,5 +1,4 @@
 # @TEST-EXEC: zeek -C -r ${TRACES}/ipsec-ikev1-zero-length.pcap %INPUT
-# @TEST-EXEC: test ! -s .stderr
 # @TEST-EXEC: btest-diff conn.log
 # @TEST-EXEC: zeek-cut -c uid name addl < weird.log > weird.log.cut
 # @TEST-EXEC: btest-diff weird.log.cut
