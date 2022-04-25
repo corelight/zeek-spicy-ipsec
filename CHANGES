@@ -1,1 +1,2 @@
+v0.2.5:		Added consts.zeek to cmake file.
 v0.2.4:		Fixed testing for Zeek v4.2.
