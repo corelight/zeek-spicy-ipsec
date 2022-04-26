@@ -874,7 +874,7 @@ event IPSEC::DataAttribute(c: connection, is_orig: bool, msg: IKE_SA_Transform_A
 		}
 	}
 
-event protocol_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
+event analyzer_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
 	{
 	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
