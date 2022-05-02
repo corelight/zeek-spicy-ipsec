@@ -545,7 +545,7 @@ type IKEv1Proposal = unit(message_id: uint32) {
 
 type IKEv1Transform = unit(message_id: uint32, proposal_num: uint8) {
 	header: IPSecIKE_Payload_Header;
-	transform: IPSecIKEv1_T_Payload(message_id, self.header, proposal_num);
+	transform: IPSecIKEv1_T_Payload(message_id, self.header, proposal_num) &size=self.header.payload_length-4;
 };
 
 type IPSecIKEv1_P_Payload = unit(message_id: uint32, header: IPSecIKE_Payload_Header) {
@@ -554,7 +554,7 @@ type IPSecIKEv1_P_Payload = unit(message_id: uint32, header: IPSecIKE_Payload_He
 	protocol_id: uint8;
 	spi_size: uint8;
 	num_transforms: uint8;
-	spi: bytes &size=self.spi_size;
+	spi: bytes &size=self.spi_size if (self.spi_size > 0);
 };
 
 type IPSecIKEv1_T_Payload = unit(message_id: uint32, header: IPSecIKE_Payload_Header, proposal_num: uint8 = 0) {
