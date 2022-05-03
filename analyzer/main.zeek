@@ -3,6 +3,8 @@ module IPSEC;
 export {
 	redef enum Log::ID += { IPSEC_LOG };
 
+	global log_policy: Log::PolicyHook;
+
 	# This is the format of ipsec.log
 	type Info: record {
 		# Timestamp for when the event happened.
@@ -677,7 +679,7 @@ redef record connection += {
 
 event zeek_init() &priority=5
 	{
-	Log::create_stream(IPSEC::IPSEC_LOG, [$columns=Info, $ev=log_ipsec, $path="ipsec"]);
+	Log::create_stream(IPSEC::IPSEC_LOG, [$columns=Info, $ev=log_ipsec, $path="ipsec", $policy=log_policy]);
 	}
 
 event zeek_init()
