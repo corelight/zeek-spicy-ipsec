@@ -1,3 +1,4 @@
+v0.2.9:		Fixed bug with optional variable.
 v0.2.8:		Added log policy hook.
 v0.2.7:		Fix a bug in how proposal transforms were parsed.
 v0.2.6:		Changed protocol_confirmation to analyzer_confirmation for Zeek v5.
