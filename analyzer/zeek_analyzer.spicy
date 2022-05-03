@@ -426,7 +426,7 @@ public function create_p_msg(msg: zeek_spicy_ipsec::IPSecIKEv1_P_Payload):
     	cast<uint8>(msg.protocol_id),
     	msg.spi_size,
     	msg.num_transforms,
-    	msg.spi
+    	optional(msg.spi)
     );
 }
 
