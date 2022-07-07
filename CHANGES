@@ -1,3 +1,4 @@
+v0.2.10:	Make Zeek v5.
 v0.2.9:		Fixed bug with optional variable.
 v0.2.8:		Added log policy hook.
 v0.2.7:		Fix a bug in how proposal transforms were parsed.
