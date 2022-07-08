@@ -814,16 +814,11 @@ event IPSEC::ikev2_ke_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_KE_M
 	c$ipsec$ke_dh_groups += msg$dh_group;
 	}
 
-function IPSEC::do_proposal(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Proposal_Msg)
+event IPSEC::ikev2_sa_proposal(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Proposal_Msg)
 	{
 	set_session(c);
 
 	c$ipsec$proposals += msg$proposal_num;
-	}
-
-event IPSEC::ikev2_sa_proposal(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Proposal_Msg)
-	{
-	IPSEC::do_proposal(c, is_orig, msg);
 	}
 
 event IPSEC::ikev1_p_payload(c: connection, is_orig: bool, msg: IPSEC::IKEv1_P_Msg)
