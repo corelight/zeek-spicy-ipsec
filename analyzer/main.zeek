@@ -49,6 +49,8 @@ export {
 		ke_dh_groups: vector of count &log &optional;
 		## Proposals
 		proposals: vector of count &log &optional;
+		## Protocol ID
+		protocol_id: count &log &optional;
 		## Certificate hashes
 		certificates: vector of string &log &optional;
 		## Transform Attributes
@@ -58,6 +60,10 @@ export {
 		## Cipher hash of this IPSec transaction info:
 		## vendor_ids, notify_messages, transforms, ke_dh_groups, and proposals
 		hash: string &log &optional;
+		## DOI value
+		doi: count &log &optional;
+		## Situation value
+		situation: string &log &optional;
 		## The analyzer ID used for the analyzer instance attached
 		## to each connection.  It is not used for logging since it's a
 		## meaningless arbitrary number.
@@ -785,29 +791,13 @@ event IPSEC::ikev1_notify_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_
 	IPSEC::do_notify(c, is_orig, msg);
 	}
 
-event IPSEC::ikev2_sa_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Transform_Msg)
+event IPSEC::ikev1_sa_payload(c: connection, is_orig: bool, msg: IPSEC::IKEv1_SA_Msg)	
 	{
 	set_session(c);
 
-	local transform_id_string: string;
-
-	if (msg$transform_type == 1) { # Encryption Algorithm (ENCR)
-		transform_id_string = encryption_transform_ids[msg$transform_id];
-	} else if (msg$transform_type == 2) { #Pseudorandom Function (PRF)
-		transform_id_string = prf_transform_ids[msg$transform_id];
-	} else if (msg$transform_type == 3) { #Integrity Algorithm (INTEG)
-		transform_id_string = integrity_transform_ids[msg$transform_id];
-	} else if (msg$transform_type == 4) { #Diffie-Hellman Group (D-H)
-		transform_id_string = dhgroup_transform_ids[msg$transform_id];
-	} else if (msg$transform_type == 5) { #Extended Sequence Numbers (ESN)
-		transform_id_string = esn_transform_ids[msg$transform_id];
-	} else {
-		# Weird - should never happen
-		Reporter::conn_weird("ikev2_unknown_transform_type", c, "");
-		transform_id_string = fmt("UNKNOWN:%d", msg$transform_type);
-	}
-
-	c$ipsec$transforms += fmt("%s:%s", transform_types_short[msg$transform_type], transform_id_string);
+	c$ipsec$message_id = msg$message_id;
+	c$ipsec$doi = msg$doi;
+	c$ipsec$situation = msg$situation;
 	}
 
 event IPSEC::ikev1_t_payload(c: connection, is_orig: bool, msg: IPSEC::IKEv1_T_Msg)
@@ -836,9 +826,12 @@ event IPSEC::ikev2_sa_proposal(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_
 	IPSEC::do_proposal(c, is_orig, msg);
 	}
 
-event IPSEC::ikev2_p_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Proposal_Msg)
+event IPSEC::ikev1_p_payload(c: connection, is_orig: bool, msg: IPSEC::IKEv1_P_Msg)
 	{
-	IPSEC::do_proposal(c, is_orig, msg);
+	set_session(c);
+
+	c$ipsec$proposals += msg$proposal_num;
+	c$ipsec$protocol_id = msg$protocol_id;
 	}
 
 function IPSEC::do_cert(c: connection, is_orig: bool, msg: IPSEC::IKE_CERT_Msg)
@@ -858,7 +851,7 @@ event IPSEC::ikev1_cert_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_CE
 	IPSEC::do_cert(c, is_orig, msg);
 	}
 
-event IPSEC::DataAttribute(c: connection, is_orig: bool, msg: IKE_SA_Transform_Attribute_Msg)
+event IPSEC::ike_data_attribute(c: connection, is_orig: bool, msg: IKE_SA_Transform_Attribute_Msg)
 	{
 	set_session(c);
 
