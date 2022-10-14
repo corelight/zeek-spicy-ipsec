@@ -864,13 +864,22 @@ event IPSEC::ike_data_attribute(c: connection, is_orig: bool, msg: IKE_SA_Transf
 		}
 	}
 
+@if (Version::at_least("6.0.0"))
+event analyzer_confirmation_info(atype: AllAnalyzers::Tag, info: AnalyzerConfirmationInfo) &priority=5
+@else
 event analyzer_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
+@endif
 	{
 	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
 		{
+@if (Version::at_least("6.0.0"))
+		set_session(info$c);
+		c$ipsec$analyzer_id = info$aid;
+@else
 		set_session(c);
 		c$ipsec$analyzer_id = aid;
+@endif
 		}
 	}

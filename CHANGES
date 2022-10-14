@@ -1,3 +1,4 @@
+v0.2.13:	Make Zeek v6 ready.
 v0.2.12:	Fixes issue with mismatched events (Issue #8).
 v0.2.11:	Fix tests.
 v0.2.10:	Make Zeek v5.
