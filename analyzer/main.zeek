@@ -748,17 +748,32 @@ function IPSEC::do_vendorid(c: connection, is_orig: bool, msg: IPSEC::IKE_VENDOR
 	{
 	set_session(c);
 
-	local vendor_id_friendly_name: string;
-	vendor_id_friendly_name = fmt("UNKNOWN:%s", bytestring_to_hexstr(msg$vendor_id));
+	local vendor_id_friendly_name = fmt("UNKNOWN:%s", bytestring_to_hexstr(msg$vendor_id));
+	local vendor_id_hex = bytestring_to_hexstr(msg$vendor_id);
+	local vendor_id_prefix = vendor_id_hex[0:16];
 
 	# Attempt to get friendly name for Vendor ID
-	for (i in IPSEC::vendor_ids)
+	if (vendor_id_prefix in vendor_lookup_table)
 		{
-		if(IPSEC::vendor_ids[i] in bytestring_to_hexstr(msg$vendor_id))
+		for (n in vendor_lookup_table[vendor_id_prefix])
 			{
-			vendor_id_friendly_name = i;
-			break;
-			}
+			if (vendor_ids[n] in vendor_id_hex)
+				{
+				vendor_id_friendly_name = n;
+				break;
+				}			
+			}	
+		}
+	else
+		{
+		for (n in vendor_lookup_table["NO_PREFIX"])
+			{
+			if (vendor_ids[n] in vendor_id_hex)
+				{
+				vendor_id_friendly_name = n;
+				break;
+				}			
+			}	
 		}
 
 	c$ipsec$vendor_ids += vendor_id_friendly_name;
