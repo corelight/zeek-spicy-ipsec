@@ -1,3 +1,4 @@
+v0.2.15:    Function refactor.
 v0.2.14:	Improved speed of do_vendorid function.
 v0.2.13:	Make Zeek v6 ready.
 v0.2.12:	Fixes issue with mismatched events (Issue #8).
