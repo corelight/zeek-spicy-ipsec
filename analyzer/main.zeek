@@ -690,10 +690,12 @@ event zeek_init() &priority=5
 
 event zeek_init()
 	{
-	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x32, "spicy::ipsec_esp") )
-		Reporter::error("cannot register IPSec Spicy analyzer");
-	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x33, "spicy::ipsec_ah") )
-		Reporter::error("cannot register IPSec Spicy analyzer");
+	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x32, "spicy_ipsec_esp") )
+		if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x32, "spicy::ipsec_esp") )
+			Reporter::error("cannot register IPSec Spicy analyzer");
+	if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x33, "spicy_ipsec_ah") )
+		if ( ! PacketAnalyzer::try_register_packet_analyzer_by_name("IP", 0x33, "spicy::ipsec_ah") )
+			Reporter::error("cannot register IPSec Spicy analyzer");
 	}
 
 function set_session(c: connection)
