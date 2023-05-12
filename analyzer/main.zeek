@@ -893,7 +893,7 @@ event analyzer_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &pr
 		{
 @if (Version::at_least("6.0.0"))
 		set_session(info$c);
-		c$ipsec$analyzer_id = info$aid;
+		info$c$ipsec$analyzer_id = info$aid;
 @else
 		set_session(c);
 		c$ipsec$analyzer_id = aid;
