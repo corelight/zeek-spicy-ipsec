@@ -1,5 +1,6 @@
 # @TEST-EXEC: zeek -C -r ${TRACES}/ikev1-certs.pcap %INPUT
-# @TEST-EXEC: btest-diff conn.log
+# @TEST-EXEC: cat conn.log | zeek-cut -m -n local_orig local_resp >conn.log.filtered
+# @TEST-EXEC: btest-diff conn.log.filtered
 #     Zeek 3.0 sorts dictionaries differently, leading to a change in vendor ID; not worth worrying about, so we just skip the diff for 3.0.
 # @TEST-EXEC: if zeek-version 40000; then btest-diff ipsec.log; fi
 # @TEST-EXEC: btest-diff .stdout

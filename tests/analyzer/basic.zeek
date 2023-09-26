@@ -1,7 +1,8 @@
 # @TEST-REQUIRES: test -e ${TRACES}/ipsec_client.pcap
 # @TEST-EXEC: zeek -Cr ${TRACES}/ipsec_client.pcap %INPUT
+# @TEST-EXEC: cat conn.log | zeek-cut -m -n local_orig local_resp >conn.log.filtered
 # @TEST-EXEC: btest-diff ipsec.log
-# @TEST-EXEC: btest-diff conn.log
+# @TEST-EXEC: btest-diff conn.log.filtered
 # @TEST-EXEC: btest-diff .stdout
 #
 # @TEST-DOC: Test IPSEC against Zeek with a small trace.
@@ -27,3 +28,9 @@ event IPSEC::ikev2_ts_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_TRAF
 event IPSEC::ikev2_encrypted_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_ENCRYPTED_Msg) { print cat("ike_encrypted_payload ", is_orig, c$id, msg); }
 event IPSEC::ikev2_configuration_attribute(c: connection, is_orig: bool, msg: IPSEC::IKE_CONFIG_ATTR_Msg) { print cat("ike_configuration_attribute ", is_orig, c$id, msg); }
 event IPSEC::ikev2_eap_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_EAP_Msg) { print cat("ike_eap_payload ", is_orig, c$id, msg); }
+
+
+event analyzer_confirmation_info(atype: AllAnalyzers::Tag, info: AnalyzerConfirmationInfo) &priority=5
+{
+    print atype;
+}

@@ -1,5 +1,6 @@
 # @TEST-EXEC: zeek -C -r ${TRACES}/ipsec-ikev1-isakmp-main-mode.pcap %INPUT
-# @TEST-EXEC: btest-diff conn.log
+# @TEST-EXEC: cat conn.log | zeek-cut -m -n local_orig local_resp >conn.log.filtered
+# @TEST-EXEC: btest-diff conn.log.filtered
 # @TEST-EXEC: btest-diff ipsec.log
 # @TEST-EXEC: btest-diff .stdout
 

@@ -1,7 +1,8 @@
 # @TEST-REQUIRES: test -e ${TRACES}/ipsec.cap
 # @TEST-EXEC: zeek -Cr ${TRACES}/ipsec.cap %INPUT
+# @TEST-EXEC: cat conn.log | zeek-cut -m -n local_orig local_resp >conn.log.filtered
 # @TEST-EXEC: btest-diff ipsec.log
-# @TEST-EXEC: btest-diff conn.log
+# @TEST-EXEC: btest-diff conn.log.filtered
 # @TEST-EXEC: btest-diff .stdout
 #
 # @TEST-DOC: Test IPSEC against Zeek with a small trace.

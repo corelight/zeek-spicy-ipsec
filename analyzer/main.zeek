@@ -887,14 +887,19 @@ event analyzer_confirmation_info(atype: AllAnalyzers::Tag, info: AnalyzerConfirm
 event analyzer_confirmation(c: connection, atype: Analyzer::Tag, aid: count) &priority=5
 @endif
 	{
+
+@if (Version::at_least("6.0.0"))
 	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
 		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
 		{
-@if (Version::at_least("6.0.0"))
 		set_session(info$c);
 		info$c$ipsec$analyzer_id = info$aid;
 @else
+	if ( atype == Analyzer::ANALYZER_SPICY_IPSEC_UDP ||
+		 atype == Analyzer::ANALYZER_SPICY_IPSEC_IKE_UDP ||
+		 atype == Analyzer::ANALYZER_SPICY_IPSEC_TCP )
+		{
 		set_session(c);
 		c$ipsec$analyzer_id = aid;
 @endif
