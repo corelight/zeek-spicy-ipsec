@@ -6,5 +6,5 @@
 
 @load analyzer
 
-event IPSEC::ah_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("ah_message_over_ip ", p, spi, seq, payload_len); }
-event IPSEC::esp_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("esp_message_over_ip ", p, spi, seq, payload_len); }
+event IPSEC::ah_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("ah_message_over_ip ", p$ip$src, p$ip$dst, spi, seq, payload_len); }
+event IPSEC::esp_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("esp_message_over_ip ", p$ip$src, p$ip$dst, spi, seq, payload_len); }

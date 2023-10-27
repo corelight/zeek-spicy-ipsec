@@ -9,8 +9,8 @@
 
 @load analyzer
 
-event IPSEC::ah_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("ah_message_over_ip ", p, spi, seq, payload_len); }
-event IPSEC::esp_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("esp_message_over_ip ", p, spi, seq, payload_len); }
+event IPSEC::ah_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("ah_message_over_ip ", p$ip$src, p$ip$dst, spi, seq, payload_len); }
+event IPSEC::esp_message_over_ip(p: raw_pkt_hdr, spi: count, seq: count, payload_len: count) { print cat("esp_message_over_ip ", p$ip$src, p$ip$dst, spi, seq, payload_len); }
 event IPSEC::ike_message(c: connection, is_orig: bool, msg: IPSEC::IKEMsg) { print cat("ike_message ", is_orig, c$id, msg); }
 event IPSEC::esp_message(c: connection, is_orig: bool, msg: IPSEC::ESPMsg) { print cat("esp_message ", is_orig, c$id, msg); }
 event IPSEC::ikev2_sa_proposal(c: connection, is_orig: bool, msg: IPSEC::IKE_SA_Proposal_Msg) { print cat("ike_sa_proposal ", is_orig, c$id, msg); }
