@@ -28,9 +28,3 @@ event IPSEC::ikev2_ts_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_TRAF
 event IPSEC::ikev2_encrypted_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_ENCRYPTED_Msg) { print cat("ike_encrypted_payload ", is_orig, c$id, msg); }
 event IPSEC::ikev2_configuration_attribute(c: connection, is_orig: bool, msg: IPSEC::IKE_CONFIG_ATTR_Msg) { print cat("ike_configuration_attribute ", is_orig, c$id, msg); }
 event IPSEC::ikev2_eap_payload(c: connection, is_orig: bool, msg: IPSEC::IKE_EAP_Msg) { print cat("ike_eap_payload ", is_orig, c$id, msg); }
-
-
-event analyzer_confirmation_info(atype: AllAnalyzers::Tag, info: AnalyzerConfirmationInfo) &priority=5
-{
-    print atype;
-}

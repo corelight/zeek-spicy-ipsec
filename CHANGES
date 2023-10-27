@@ -1,3 +1,4 @@
+v0.2.20:    Removed output for a test for compatibility reasons.
 v0.2.19:    Made tests Zeek v6 ready.
 v0.2.18:	Fixed a Zeek v6 bug with analyzer confirmation.
 v0.2.17:	Made logic ready for Zeek v5.2.
