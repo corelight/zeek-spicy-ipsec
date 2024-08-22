@@ -1,14 +1,11 @@
 protocol analyzer spicy::ipsec_udp over UDP:
-	parse with zeek_spicy_ipsec::IPSecPacketUDP,
-	ports {4500/udp, 4501/udp};
+	parse with zeek_spicy_ipsec::IPSecPacketUDP;
 
 protocol analyzer spicy::ipsec_ike_udp over UDP:
-	parse with zeek_spicy_ipsec::IPSecIKE,
-	ports {500/udp};
+	parse with zeek_spicy_ipsec::IPSecIKE;
 
 protocol analyzer spicy::ipsec_tcp over TCP:
-	parse with zeek_spicy_ipsec::IPSecPacketsTCP,
-	ports {4500/tcp};
+	parse with zeek_spicy_ipsec::IPSecPacketsTCP;
 
 packet analyzer spicy::ipsec_esp:
     parse with zeek_spicy_ipsec::IPSecESP_IP;

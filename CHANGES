@@ -1,3 +1,4 @@
+v0.2.22:    Make Zeek v7 ready.
 v0.2.21:    Fixed tests for zeek v5.
 v0.2.20:    Removed output for a test for compatibility reasons.
 v0.2.19:    Made tests Zeek v6 ready.
